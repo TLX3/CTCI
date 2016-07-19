@@ -1,6 +1,19 @@
-//1.1
-//Doesn't work for sentences and is case insensitive. Use regex to parse out whitespaces and symbols
-//O(klogk) time
+'use strict';
+
+/**
+1.1
+O(N) time O(N) memory
+**/
+function isUnique1(str) {
+  let set = new Set();
+  for(let i = 0; i < str.length; i++) {
+    if(set.has(str[i])) return false;
+    set.insert(str[i]);
+  }
+  return true;
+}
+
+//O(NlogN) time O(1) memory
 function isUnique(str) {
   let sortedStr = str.split("").sort();
   for(let i = 0; i < str.length; i++) {
@@ -9,7 +22,10 @@ function isUnique(str) {
   return true;
 }
 
-//1.2 O(k + l)
+/**
+1.2
+O(M + N) time O(N) space
+*/
 function checkPermutation(str1, str2) {
   if(str1.length !== str2.length) return false;
   let counts1 = hashCharCount(str1), counts2 = hashCharCount(str2);
@@ -22,7 +38,7 @@ function checkPermutation(str1, str2) {
 function hashCharCount(str) {
   let counts = {};
   str = str.split("");
-  for(var i = 0; i < str.length; i++) {
+  for(let i = 0; i < str.length; i++) {
     if(counts[str[i]] == undefined) {
       counts[str[i]] = 1;
     }
@@ -32,9 +48,20 @@ function hashCharCount(str) {
   }
   return counts;
 }
+//O(NlogN + MlogM) time O(1) space
+function isPermutationSorted(str1, str2) {
+  if(str1.length !== str2.length) return false;
+  str1 = str1.sort();
+  str2 = str2.sort();
+  return str1.every((char, i) => char === str2[i]);
+}
 
-//1.3 O(k)
+/**
+1.3
+O(N) time O(N) space
+*/
 function URLify(str) {
+  if(str === "") return str;
   let url = [], idx = str.length - 1;
   while(str[idx] === " ") {
     idx -= 1;
@@ -50,13 +77,17 @@ function URLify(str) {
   return url.join("");
 }
 
-//1.4 O(k) Hash count of chars in string. If there are 2 or more chars with odd counts then it cannot be a palindrome
+/**
+1.4
+O(N) time O(N) space
+Hash count of chars in string. If there are 2 or more chars with odd counts then it cannot be a palindrome
+*/
 function palindromePermutation(str) {
   let counts = {}, numOddCounts = 0;
-  str = str.toLowerCase().split("");
-  for(var i = 0; i < str.length; i++) {
+  str = str.toLowerCase();
+  for(let i = 0; i < str.length; i++) {
     if(str[i] !== " ") {
-      if(counts[str[i]] !== undefined) {
+      if(counts[str[i]]) {
         counts[str[i]] += 1;
       }
       else {
@@ -73,10 +104,11 @@ function palindromePermutation(str) {
   return true;
 }
 
-//1.5 O(N + M)
+/**
+1.5
+O(N) time O(1) space
+*/
 function oneAway(str1, str2) {
-  str1 = str1.split("");
-  str2 = str2.split("");
   if(str1 === str2) return true;
   if(str1.length !== str2.length) {
     if(str1.length < str2.length) {
@@ -89,17 +121,19 @@ function oneAway(str1, str2) {
     }
   }
   else {
-    let counts = 0;
+    let changes = 0;
     for(let i = 0; i < str1.length; i++) {
-      if(str1[i] !== str2[i]) counts += 1;
-    } 
-    return counts === 1 ? true : false;
+      if(str1[i] !== str2[i]) changes += 1;
+    }
+    return changes === 1 ? true : false;
   }
 }
 
-//1.6 O(N)
+/**
+1.6
+O(N) time O(N) space
+*/
 function stringCompression(str) {
-  str = str.toLowerCase();
   let newStr = "", counts = {};
   str.split("").forEach(c => {
     if(counts[c]) {
@@ -115,17 +149,31 @@ function stringCompression(str) {
   return newStr.length < str.length ? newStr : str;
 }
 
-//1.7 
-function rotateMatrix(arr) {
-  
+/**
+1.7
+O(N^2) time O(1) space
+*/
+function rotateMatrix(matrix) {
+  if(matrix.length === 0 || matrix.length !== matrix[0].length) throw "Invalid input";
+  if(matrix.length === 1) return matrix;
+  for(let i = 0; i < matrix.length; i++) {
+    for(let j = 0; j < matrix.length; j++) {
+      let temp = matrix[i][j];
+      matrix[i][j] = matrix[j][i];
+      matrix[j][i] = temp;
+    }
+  }
+  return matrix.map(row => row.reverse);
 }
 
-//1.8 O(N^2M)
+/**
+1.8
+O(N*M) time O(N + M) space
+*/
 function zeroMatrix(arr) {
-  let zeroRow = [];
-  for(let i = 0; i < arr[0].length; i++) {
-    zeroRow.push(0);
-  }
+  if(arr.length === 0) return arr;
+  let zeroRow = new Array(arr[0].length);
+  zeroRow.fill(0);
   for(let i = 0; i < arr.length; i++) {
     for(let j = 0; j < arr[0].length; j++) {
       if(arr[i][j] === 0) {
@@ -143,8 +191,12 @@ function setColZero(arr, col) {
   return arr;
 }
 
-//1.9
+/**
+1.9
+O(N + M) time O(1) space
+*/
 function isRotation(str1, str2) {
+  if(str1.length !== str2.length) return false;
   let i = 0, j = 0;
   while(str1[i] !== str2[0]) {
     i += 1;
@@ -154,7 +206,6 @@ function isRotation(str1, str2) {
     j += 1;
   }
   if(isSubstring(str1, str2.slice(j))) return true;
-  console.log(str2.slice(j));
   return false;
 }
 
@@ -164,4 +215,10 @@ function isSubstring(s1, s2) {
     if(s1.substring(i, i + length) === s2) return true;
   }
   return false;
+}
+
+//O(N) time O(N) space
+function isRotation2(str1, str2) {
+  if(str1.length !== str2.length) return false;
+  return (str1 + str1).includes(str2);
 }
