@@ -1,3 +1,5 @@
+'use strict';
+
 //Node
 class Node {
   constructor(data) {
@@ -11,7 +13,7 @@ class LinkedList {
   constructor(data) {
     this.head = new Node(data)
   }
-  
+
   append(data) {
     let node = this.head;
     let newNode = new Node(data);
@@ -21,7 +23,7 @@ class LinkedList {
     node.next = newNode;
     newNode.prev = node;
   }
-  
+
   remove(data) {
     let node = this.head;
     while(node !== null && node.data !== data) {
@@ -38,27 +40,30 @@ class LinkedList {
   }
 }
 
-//2.1 //O(N^2)
+/**
+2.1
+O(N) time O(N) space
+*/
 function removeDups(linkedList) {
   let seen = {};
   let dups = [];
   let node = linkedList.head;
-  while(node.next !== null) {
-    if(seen[node.data]) {
-      dups.push(node.data);
-      seen[node.data] += 1;
+  while(node.next) {
+    if(seen[node.next.data]) {
+      node.next = node.next.next;
     }
     else {
-      seen[node.data] = 1;
+      seen[node.data] = true;
     }
     node = node.next;
   }
-  dups.forEach(dup => {
-    linkedList.remove(dup);
-  });
+  return linkedList;
 }
 
-//2.2 O(N)
+/**
+2.2
+O(N) time O(1) space
+*/
 function kthToLast(k, linkedList) {
   let node = linkedList.head;
   let runner = linkedList.head;
@@ -68,6 +73,7 @@ function kthToLast(k, linkedList) {
     runner = runner.next;
     length += 1;
   }
+  if(k <= 0 || k > length) throw "k must be in range of list size";
   while(count !== length - 1 - k) {
     node = node.next;
     counts += 1;
@@ -75,7 +81,10 @@ function kthToLast(k, linkedList) {
   linkedList.remove(node);
 }
 
-//2.3 O(N)
+/**
+2.3
+O(N) time O(1) space
+*/
 function deleteMiddleNode(linkedList) {
   let node = linkedList.head;
   let runner = linkedList.head;
@@ -92,13 +101,53 @@ function deleteMiddleNode(linkedList) {
   linkedList.remove(node);
 }
 
-//2.4
-function partition(linkedList, n) {
-  
+//O(1) time O(1) space
+function deleteMiddleNode2(node) {
+  if(!node.next) throw "invalid node";
+  node.data = node.next.data;
+  node.next = node.next.next;
 }
 
-//2.5 O(N + M)
-function sumLists(list1, list2) {
+/**
+2.4
+O(N) time O(1) space
+*/
+function partition(linkedList, p) {
+  let node = linkedList.head;
+  let leftTail = null, rightTail = null, leftHead = null, rightHead = null;
+  while(node) {
+    let next = node.next;
+    node.next = null;
+    if(node.data >= p) {
+        if(!rightTail) {
+          rightHead = rightTail = node;
+        }
+        else {
+          rightTail = rightTail.next = node;
+        }
+    }
+    else if(node.data < p) {
+      if(!leftTail) {
+        leftHead = leftTail = node;
+      }
+      else {
+        leftTail = leftTail.next = node;
+      }
+    }
+    node = next;
+  }
+
+  if(leftTail) {
+    leftTail.next = rightHead;
+  }
+  return leftHead || rightHead;
+}
+
+/**
+2.5
+O(N + M) time O(1) space
+*/
+function sumListsForward(list1, list2) {
   let node1 = list1.head, node2 = list2.head, digitsPlace = 1;
   let sum = 0;
   while(node1.next !== null) {
@@ -110,12 +159,15 @@ function sumLists(list1, list2) {
   while(node2.next !== null) {
     sum += digitPlace*node2.data;
     node2 = node2.next;
-    digitsPlace *= 10; 
+    digitsPlace *= 10;
   }
   return sum;
-} 
+}
 
-//2.6 O(N)
+/**
+2.6
+O(N) time O(1) space
+*/
 function palidrome(linkedList) {
   let runner = linkedList.head, node = linkedList.head, length = 0, count = 0;
   while(runner.next !== null) {
@@ -131,7 +183,10 @@ function palidrome(linkedList) {
   return true;
 }
 
-//2.7 O(N + M)
+/**
+2.7
+O(N + M) time O(N + M) space
+*/
 function intersection(list1, list2) {
   let node1 = list1.head, node2 = list2.head, seen1 = {}, seen2 = {} intersection = [];
   while(node1.next !== null) {
@@ -148,13 +203,25 @@ function intersection(list1, list2) {
   return intersection
 }
 
-//2.8 O(N)
+/**
+2.8
+O(N) time O(1) space
+*/
 function loopDetection(list) {
-  let seen = {}, node = list.head;
-  while(node.next !== null) {
-    if(seen[node]) return true;
-    seen[node] = true;
-    node = node.next;
+  let slow = list.head;
+  let fast = list.head;
+  while(slow.next && fast.next && fast.next.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+    if(fast === slow) {
+      break;
+    }
   }
-  return false;
+  if(slow !== fast) return null;
+  slow = list.head;
+  while(slow !== fast) {
+    slow = slow.next;
+    fast = fast.next;
+  }
+  return fast;
 }
