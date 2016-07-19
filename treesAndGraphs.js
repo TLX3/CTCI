@@ -19,7 +19,7 @@ class BinaryTree {
   constructor() {
     this.root = null;
   }
-  
+
   find(value) {
     let node = this.root;
     while(node !== null) {
@@ -35,7 +35,7 @@ class BinaryTree {
     }
     return false;
   }
-  
+
   insert(value) {
     if(this.find(value)) throw "Value already inserted";
     let newNode = new BNode(value);
@@ -62,7 +62,7 @@ class BinaryTree {
       }
     }
   }
-  
+
   remove(value) {
     if(!this.find(value)) throw "Value is not in tree";
     let current = this.root;
@@ -70,14 +70,14 @@ class BinaryTree {
     while(current !== null) {
       if(value < current.value) {
         if(current.left !== null && current.left.value === value) {
-          
+
           break;
         }
         current = current.left;
       }
       if(value > current.value) {
         if(current.right !== null && current.right.value === value) {
-          
+
           break;
         }
         current = current.right;
@@ -116,12 +116,12 @@ class MinHeap {
   constructor() {
     this.content = [];
   }
-  
+
   insert(element) {
     this.content.push(element);
     this.bubbleUp(this.content.length - 1);
   }
-  
+
   pop() {
     let min = this.content[0];
     let end = this.content.pop();
@@ -131,7 +131,7 @@ class MinHeap {
     }
     return min;
   }
-  
+
   bubbleUp(idx) {
     let element = this.content[idx];
     while(idx !== 0) {
@@ -144,7 +144,7 @@ class MinHeap {
       idx = parentIdx;
     }
   }
-  
+
   sinkDown(idx) {
     let element = this.content[idx];
     let length = this.content.length;
@@ -162,7 +162,7 @@ class MinHeap {
       idx = swapIdx;
     }
   }
-  
+
   extractMin() {
     if(this.content.length == 0) throw "Heap is empty";
     return this.content[0];
@@ -174,7 +174,7 @@ class Trie {
   constructor() {
     this.root = {};
   }
-  
+
   insert(string) {
     if(typeof string !== "string") throw "Argument is not a string";
     let current = this.root;
@@ -186,7 +186,7 @@ class Trie {
     }
     current.* = true;
   }
-  
+
   hasWord(string) {
     if(typeof string !== "string") throw "Argument is not a string";
     let current = this.root;
@@ -198,7 +198,7 @@ class Trie {
     }
     return current.* === true;
   }
-  
+
   remove(string) {
     if(typeof string !== "string") throw "Argument is not a string";
     if(!this.hasWord(string)) throw "Word is not in the trie";
@@ -266,32 +266,234 @@ class Node {
   }
 }
 
-//4.1 O(N + M) time checks if route between 2 node of a directed graph
+/**
+4.1
+O(E) time O(V) space
+Use BFS if nodes don't have a high degree or paths between nodes are not exceedingly deep.
+Use DFs if nodes have long paths.
+ */
 function routeBetweenNodes(node1, node2) {
-  return node1.bfs(node2.value) || node2.bfs(node1.value);
+  return node1.bfs(node2.value);
 }
 
-//4.2 
+function routeBetweenNodes2(node1, node2) {
+  return node1.dfs(node2.value);
+}
+
+/**
+4.2
+O(NlgN) time O(N) space
+*/
 function minimalTree(arr) {
   let mid = Math.floor(arr.length/2);
   let tree = new BST();
-  tree.root = new Node(arr[mid]);
-  let left = arr.slice(0, mid), right = arr.slice(mid + 1);
-  while(left.length > 0 || right.length > 0) {
-    let leftMid = Math.floor(left.length/2), rightMid = Math.floor(right.length/2);
-    if(left.length > 0) {
-      tree.insert(left[leftMid]);
-      left.splice(leftMid, 1);
-    }
-    if(right.length > 0) {
-      tree.insert(right[rightMid]);
-      right.splice(rightMid, 1);
-    }
+  if(arr.length > 0) {
+    add(tree, arr, 0, arr.length - 1);
   }
   return tree;
 }
 
-//4.3
-function listOfDepths(binaryTree) {
+function add(tree, arr, start, end) {
+  if(start === end) {
+    tree.add(arr[start]);
+  }
+  else {
+    let mid = start + Math.floor((end - start)/2);
+    tree.add(arr[mid]);
+    add(tree, arr, start, mid - 1);
+    add(tree, arr, mid + 1, end);
+  }
+}
 
+/**
+4.3
+O(N) time O(N) space
+*/
+function listByDepth(binaryTree) {
+  let depths = [];
+  addToLists(depths, binaryTree.root, 0);
+  return depths;
+}
+
+function addToLists(list, node, depth) {
+  if(!list[depth]) {
+    list[depth] = new LinkedList();
+  }
+  list[depth].append(node);
+  addToLists(list, node.left, depth + 1);
+  addToLists(list, node.right, depth + 1);
+}
+
+/**
+4.4
+O(N) time O(N) space
+*/
+function checkBalanced(binaryTree) {
+  let pathsToLeaf = {min: Number.MAX_SAFE_INTEGER, max: 0};
+  findDepth(pathsToLeaf, binaryTree.root, 0);
+  return pathsToLeaf.max - pathsToLeaf.min <= 1;
+}
+
+function findDepth(cache, node, depth) {
+  if(!node) {
+    if(depth < cache.min) {
+      cache.min = depth;
+    }
+    if(depth > cache.max) {
+      cache.max = depth;
+    }
+  }
+  else {
+    findDepth(cache, node.left, depth + 1);
+    findDepth(cache, node.right, depth + 1);
+  }
+}
+
+/**
+4.5
+O(N) time O(N) space
+*/
+function validateBST(binaryTree) {
+  return checkBST(tree.root, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
+}
+
+function checkBST(node, min, max) {
+  if(node) {
+    if(node.value < min || node.value > max) {
+      return false;
+    }
+    return checkBST(node.left, min, node.value) &&
+           checkBST(node.right, node.value, max);
+  }
+  return true;
+}
+
+/**
+4.6
+O(lgN) time O(1) space
+*/
+function inorderSuccessor(node) {
+  let current = node;
+  if(current.right) {
+    current = current.right;
+    while(current.left) {
+      current = current.left;
+    }
+    return current.value;
+  }
+  else {
+    while(current.parent && current !== current.parent.left) {
+      current = current.parent;
+    }
+    return current.parent ? current.parent.value : undefined;
+  }
+}
+
+/**
+4.7
+O(N + M) time O(N) space
+*/
+function buildOrder(projects, dependencies) {
+  let adjacencyM = {}, finished = [], seen = {}, path = {};
+  projects.forEach(p => adjacencyM[p] = []);
+  dependencies.forEach(edge => adj[edge[1]].push(edge[0]));
+  projects.forEach(p => topologicalSort(adjacencyM, seen, finished, path, p));
+  return finished.reverse();
+}
+
+function topologicalSort(adjacencyM, seen, finished, path, project) {
+  if(seen[project]) return;
+  seen[project] = true;
+  path[project] = true;
+  for(let neighbor of adjacencyM[project]) {
+  if(path[neighbor]) {
+    throw "cyclic dependency";
+  }
+  topologicalSort(adjacencyM, seen, finished, path, neighbor);
+  }
+  delete path[project];
+  finished.push(project);
+}
+
+/**
+4.8
+O(lgN) time O(1) space
+*/
+function firstCommonAncestor(node1, node2) {
+  let depth1 = distFromRoot(node1), depth2 = distFromRoot(node2);
+  node1 = moveUp(node1, depth1 - depth2);
+  node2 = moveUp(node2, depth2 - depth1);
+  while(node1 !== node2) {
+    node1 = node1.parent;
+    node2 = node2.parent;
+  }
+  return node1;
+}
+
+function distFromRoot(node) {
+  let count = 0;
+  while(node) {
+    node = node.parent;
+    count += 1;
+  }
+  return count;
+}
+
+function moveUp(node, amount) {
+  for(let i = 0; i < amount; i++) {
+    node = node.parent;
+  }
+  return node;
+}
+
+/**
+4.9
+
+*/
+function treeSequences(binaryTree) {
+  let sequences = [];
+  createPaths(sequences, binaryTree.root);
+  return sequences;
+}
+
+function createPaths(sequences, node) {
+  let seq = [];
+  if(!node) {
+    sequences.push(seq);
+  }
+  else {
+    seq.push()
+  }
+}
+
+/**
+4.10
+O(N*M) time
+*/
+function isSubstree(tree1, tree2) {
+  let node = tree2.root;
+  let possibleRoot = tree1.findNode(node);
+  if(possibleRoot) {
+    return sameTree(possibleRoot);
+  }
+  return false;
+}
+
+/**
+4.11
+*/
+function randomNode(tree) {
+
+}
+
+/**
+4.12
+O(NlgN) time O(N) space
+*/
+function findPathsWithSum(binaryTree, value) {
+  return pathSums([], binaryTree.root, value);
+}
+
+function pathSums(path, node, value) {
+  
 }

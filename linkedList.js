@@ -209,19 +209,13 @@ O(N) time O(1) space
 */
 function loopDetection(list) {
   let slow = list.head;
-  let fast = list.head;
-  while(slow.next && fast.next && fast.next.next) {
+  let fast1 = list.head;
+  let fast2 = list.head;
+  while(slow && fast1.next && fast2.next.next) {
+    fast1 = fast1.next;
+    fast2 = fast2.next.next;
+    if(slow === fast1 || slow === fast2) return true;
     slow = slow.next;
-    fast = fast.next.next;
-    if(fast === slow) {
-      break;
-    }
   }
-  if(slow !== fast) return null;
-  slow = list.head;
-  while(slow !== fast) {
-    slow = slow.next;
-    fast = fast.next;
-  }
-  return fast;
+  return false;
 }

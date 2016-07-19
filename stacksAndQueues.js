@@ -12,7 +12,7 @@ class Stack {
     this.capacity = capacity;
     this.length;
   }
-  
+
   pop() {
     if(this.top === null) return false;
     item = top.data;
@@ -20,7 +20,7 @@ class Stack {
     this.length -= 1;
     return item;
   }
-  
+
   push(data) {
     if(this.length === this.capacity) return false;
     let node = new Node(data);
@@ -28,12 +28,12 @@ class Stack {
     this.top = node;
     this.length += 1;
   }
-  
+
   peek() {
     if(this.top === null) return false;
     return this.top.data;
   }
-  
+
   isEmpty() {
     return this.top === null;
   }
@@ -45,14 +45,14 @@ class Queue {
     this.first = null;
     this.last = null;
   }
-  
+
   enqueue(data) {
     let node = new Node(data);
     if(this.last !== null) this.last.next = node;
     this.last = node;
     if(this.first == null) this.first = this.last;
   }
-  
+
   dequeue() {
     if(this.first === null) return false;
     let data = this.first.data;
@@ -60,21 +60,50 @@ class Queue {
     if(this.first === null) this.last = this.null;
     return data;
   }
-  
+
   peek() {
     if(this.first === null) return false;
     return this.first;
   }
-  
+
   isEmpty() {
     return this.first === null;
   }
 }
 
-//3.1 Create an array with length 3. When pushing specify array num 1 || 2 || 3 then iterate by -(num + 3) until finding a null entry 
-//or append 3 more null values to the array
+/**
+3.1
+O(1) time push O(1) time pop
+*/
+class TripleStack {
+  constructor() {
+    this.stacks = [];
+    this.lengths = [0,0,0];
+  }
 
-//3.2 Keep track of min in an instance variable. Update while inserting or removing data.
+  length(stack) {
+    return this.lengths[stack - 1];
+  }
+
+  push(stack, val) {
+    this.stacks[this.length(stack)*3 + stack - 1] = val;
+    this.length[stack - 1] += 1;
+  }
+
+  pop(stack) {
+    let value = null;
+    if(this.length(stack - 1) > 0) {
+      let idx = (this.length(stack) - 1)*3 + stack - 1;
+      value = this.stacks[idx];
+      this.stacks[idx] = undefined;
+      this.lengths[stack - 1] -= 1;
+    }
+    return value;
+  }
+}
+
+//3.2 Hold objects in an array that maintain the current min
+//Return min by peeking at the min property of the top object
 
 //3.3 O(1) pop/insert
 class StackOfStack {
@@ -82,34 +111,34 @@ class StackOfStack {
     this.stacks = [];
     this.capacity = capacity;
   }
-  
+
   push(data) {
     if(!this.stacks[this.stacks.length - 1].push(data)) {
       this.stacks.push(new Stack(this.capacity))
       this.stacks[this.stacks.length - 1].push(data);
     }
   }
-  
+
   pop() {
     return this.stacks[this.stacks.length - 1].pop();
   }
-  
+
   popAt(idx) {
     return this.stacks[idx].pop();
   }
 }
 
-//3.4
+//3.4 O(1) enqueue O(N) dequeue O(N) space
 class StackQueue {
   constructor() {
     this.stack1 = [];
     this.stack2 = [];
   }
-  
+
   enqueue(data) {
     this.stack1.push(data);
   }
-  
+
   dequeue() {
     while(!this.stack1.isEmpty()) {
       this.stack2.push(this.stack1.pop());
@@ -120,17 +149,17 @@ class StackQueue {
     }
     return data;
   }
-  
+
   peek() {
     return stack1.slice(-1);
   }
-  
+
   isEmpty() {
     return stack1.length !== 0;
   }
 }
 
-//3.5 O(N^2)
+//3.5 O(N^2) time
 function sortStack(stack) {
   let tempStack = [];
   let count = 0;
@@ -169,7 +198,7 @@ class AnimalQueue {
     this.dogs = [];
     this.cats = [];
   }
-  
+
   enqueue(animal) {
     if(animal.type === "Cat") {
       this.cats.push(animal);
@@ -181,7 +210,7 @@ class AnimalQueue {
       throw "Must be either a Cat or Dog";
     }
   }
-  
+
   dequeueAny() {
     if(this.dogs.length > 0 && this.cats.length > 0) {
       if(this.dogs.slice(-1)[0].arrival > this.cats.slice(-1)[0].arrival) {
@@ -201,12 +230,12 @@ class AnimalQueue {
       this.dogs.pop();
     }
   }
-  
+
   dequeueDog() {
     if(this.dogs.length === 0) throw "No dogs in queue";
     this.dogs.pop();
   }
-  
+
   dequeueCat() {
     if(this.cats.length === 0) throw "No cats in queue";
     this.cats.pop();
