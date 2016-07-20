@@ -60,4 +60,176 @@ function magicNumber(arr, start, end) {
   return right;
 }
 
-//8.4 
+//8.4 O(N*2^N) time O(N*2^N) space
+function powerSet(arr) {
+  let subsets = [[]];
+  for(let i = 0; i < arr.length; i++) {
+    let currentSubs = subsets.slice();
+    currentSubs.forEach(sub => subsets.push(sub.concat([arr[i]])));
+  }
+  return subsets;
+}
+
+function powerSet2(set) {
+  let subsets = [];
+  let max = 1 << arr.length();
+  for(let i = 0; i < max; i++) {
+    subsets.push(convertIntToSet(i, set));
+  }
+  return subsets;
+}
+
+function convertIntToSet(i, set) {
+  let subset = [];
+  let index = 0;
+  for(i; i > 0; i >>= 1) {
+    if((i & 1) === 1) {
+      subset.push(set[i]);
+    }
+    index += 1;
+  }
+  return subset;
+}
+
+//8.5 O(lgN) time O(1) space
+function recursiveMultiply(a, b) {
+  if(b < a) {
+    let temp = a;
+    a = b;
+    b = temp;
+  }
+  if(smaller === 0) return 0;
+  else if(smaller === 1) return b;
+  let halfProd = recursiveMultiply(a >> 1, b);
+  if(a % 2 === 0) {
+    return halfProd + halfProd;
+  }
+  else {
+    return halfProd + halfProd + b;
+  }
+}
+
+//8.6
+function towersOfHanoi(n, origin, destination, buffer) {
+  if(n <= 0) {
+    return;
+  }
+  moveDisks(n - 1, origin, buffer, destination);
+  moveTop(origin, destination);
+  moveDisks(n - 1, buffer, destination, origin);
+}
+
+//8.7
+function permutationWithoutDups(str) {
+  if(str === null) return null;
+  let perms = [];
+  if(str.length === 0) {
+    perms.push("");
+    return perms;
+  }
+  let first = str[0];
+  let remainder = str.slice(1, str.length - 1);
+  let words = permutationWithoutDups(remainder);
+  for(let i = 0; i < words.length; i++) {
+    let word = words[i];
+    for(let j = 0; j < word.length; j++) {
+      let newStr = word.splice(j,0,first);
+      perms.push(newStr);
+    }
+  }
+  return perms;
+}
+
+function permutations(str) {
+  let perms = [];
+  if(str.length === 0) {
+    perms.push("");
+    return perms;
+  }
+  for(let i = 0; i < str.length; i++) {
+    let before = str.slice(0, i);
+    let after = str.slice(i + 1, str.length - 1);
+    let partials = permutations(before + after);
+    for(let j = 0; j < partials.length; j++) {
+      perms.push(str[i] + partials[j]);
+    }
+  }
+  return perms;
+}
+
+//8.8
+
+
+//8.9
+function allValidParens(n) {
+  let str = new Array(2*n);
+  let parens = [];
+  addParens(parens, n, n, str, 0);
+  return parens;
+}
+
+function addParens(parens, leftRem, rightRem, str, idx) {
+  if(leftRem < 0 || rightRem < leftRem) return;
+  if(leftRem === 0 && rightRem === 0) {
+    parens.push(str.join(""));
+  }
+  else {
+    str[idx] = '(';
+    addParens(parens, leftRem - 1, rightRem, str, idx + 1);
+    str[idx] = ')';
+    addParens(parens, leftRem, rightRem - 1, str, idx + 1)
+  }
+}
+
+//8.10
+
+//8.11
+function allChange(n) {
+  let coins = [1, 5, 10, 25];
+  return makeChange(n, coins, 0);
+}
+
+function makeChange(n, coins, idx) {
+  if(idx >= coins.length - 1) {
+    return 1;
+  }
+  let currentAmount = coins[idx];
+  let ways = 0;
+  for(let i = 0; i*currentAmount <= n; i++) {
+    let remainder = n - i*currentAmount;
+    ways += makeChange(remainder, coins, idx + 1);
+  }
+  return ways;
+}
+
+//8.12
+function placeQueens(row, columns, results) {
+  if(row === 8) {
+    results.push(columns.slice());
+  }
+  else {
+    for(let col = 0; col < 8; col++) {
+      if(checkValid(columns, row, col)) {
+        columns[row] = col;
+        placeQueens(row + 1, columns, results);
+      }
+    }
+  }
+}
+
+function checkValid(columns, row1, column1) {
+  for(let row2 = 0; row2 < row1; row2++) {
+    let column2 = columns[row2];
+    if(column1 === column2) {
+      return false;
+    }
+    let columnDistance = Math.abs(column2 - column1);
+    let rowDistance = row1 - row2;
+    if(columnDistance === rowDistance) {
+      return false;
+    }
+  }
+  return true;
+}
+
+//8.13
