@@ -1,4 +1,4 @@
-/* 
+/*
  All positive integers can be decomposed into a product of primes
  y is divisible by x or x \ y or y % x === 0
  i.e. All primes in x's prime factorization must be in y's prime factorization
@@ -37,22 +37,32 @@ function SieveOfErastosthenes(max) {
 //P(A or B) = P(A) + P(B) - P(A and B)
 //Two events that have non-zero probabilities cannot be both independent and mutually exclusive
 
-/*6.1 
- Given sufficient pills per bottle, remove i pills from ith bottle. 
+/*6.1
+ Given sufficient pills per bottle, remove i pills from ith bottle.
  Measure all of the pills on the the scale. The fractional value of
  the measurement will refer to the ith bottle that has heavior pills
  since all other bottle have integer weight pills.
 */
 
-/* 6.2 
- 
+/* 6.2
+ Let p = probability of making one a shot
+ So for game 1, P = p.
+ for game 2, P = P(making 3 out of 3 shots) + P(making 2 out of 3 shots)
+  = P(making 3 out of 3 shots) +
+  P(making shot 1 and shot 2 missing shot 3) + P(making shot 2 and shot 3 missing shot 1) + P(making shot 1 and shot 3 missing shot 2)
+  = p^3 + p^2(1 - p) + p^2(1 - p) + p^2(1 - p) = p^3 + 3p^2(1 - p) = 3p^2 - 2p^3
+  if P(game 1) > P(game 2) then
+  p > 3p^2 - 2p^3 -> 2p^2 - 3p + 1 > 0 -> (2p - 1)(p - 1) > 0
+ Since p < 1 then p - 1 < 0.
+ Since both terms must be negative 2p - 1 < 0 -> p < 0.5
+ So game 1 should be played if p < 0.5 otherwise play game 2
 */
 
-/* 6.3 
+/* 6.3
   Each domino captures one white and one black space. On a nxn chessboard with opposite corners top-left bottom-right
   missing has n*n/2 - 2 white and black n*n/2 spaces.
-  Given (n*n - 2)/2 dominos, we require n*n/2 - 1 black and also white spaces.
-  Given n > 0, n*n/2 - 1 > n*n/2 - 2, so there is insufficient white spaces for the dominos.
+  Given (n*n - 2)/2 dominos, we require n*n/2 - 1 black and also n*n/2 - 1 white spaces.
+  Given n > 0, n*n/2 - 1 > n*n/2 - 2, there is insufficient white spaces for the dominos.
 */
 
 /* 6.4
@@ -61,12 +71,12 @@ function SieveOfErastosthenes(max) {
 */
 
 /* 6.5
-  Fill up the 5 quart jug and distribute to the 3 quart jug. Empty out the 3 quart jug and pour the 2 quarts from the 5 quarts jugs 
+  Fill up the 5 quart jug and distribute to the 3 quart jug. Empty out the 3 quart jug and pour the 2 quarts from the 5 quarts jugs
   into the 3 quarts jug. Fill up the 5 quarts jug and fill 3 quarts jug till capacity. You now have 4 quarts left in the 5 quarts jug.
 */
 
 /* 6.6
-
+ if m number of people have blue eyes out of n people. It will take m days for each blue eyed person to leave.
 */
 
 /* 6.7

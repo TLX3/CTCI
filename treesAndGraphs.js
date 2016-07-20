@@ -495,5 +495,19 @@ function findPathsWithSum(binaryTree, value) {
 }
 
 function pathSums(path, node, value) {
-  
+  let count = 0;
+  if(node) {
+    path.push(node.value);
+    let sum = 0;
+    for(let i = path.length - 1; i >= 0; i--) {
+      sum += path[i];
+      if(sum === value) {
+        count += 1;
+      }
+    }
+    count += pathSums(path, node.left, value)
+           + pathSums(path, node.right, value);
+    path.pop();
+  }
+  return count;
 }
