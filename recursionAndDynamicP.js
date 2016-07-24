@@ -11,7 +11,7 @@ function countWays(n, memo) {
   else if(n === 0) {
     return 1;
   }
-  else if(memo[n] > -1) {
+  else if(memo[n]) {
     return memo[n];
   }
   else {
@@ -50,13 +50,13 @@ function magicNumber(arr, start, end) {
   if(arr[mid] === mid) {
     return mid;
   }
-  let leftMid = Math.min(mid - 1, arr[mid]);
-  let left = magicNumber(arr, start, leftMid);
+  let leftEnd = Math.min(mid - 1, arr[mid]);
+  let left = magicNumber(arr, start, leftEnd);
   if(left >= 0) {
     return left;
   }
-  let rightMid = Math.max(mid + 1, arr[mid]);
-  let right = magicNumber(arr, rightMid, end);
+  let rightStart = Math.max(mid + 1, arr[mid]);
+  let right = magicNumber(arr, rightStart, end);
   return right;
 }
 
@@ -98,8 +98,8 @@ function recursiveMultiply(a, b) {
     a = b;
     b = temp;
   }
-  if(smaller === 0) return 0;
-  else if(smaller === 1) return b;
+  if(a === 0) return 0;
+  else if(a === 1) return b;
   let halfProd = recursiveMultiply(a >> 1, b);
   if(a % 2 === 0) {
     return halfProd + halfProd;
@@ -110,7 +110,7 @@ function recursiveMultiply(a, b) {
 }
 
 //8.6
-function towersOfHanoi(n, origin, destination, buffer) {
+function moveDisks(n, origin, destination, buffer) {
   if(n <= 0) {
     return;
   }
@@ -148,7 +148,7 @@ function permutations(str) {
   }
   for(let i = 0; i < str.length; i++) {
     let before = str.slice(0, i);
-    let after = str.slice(i + 1, str.length - 1);
+    let after = str.slice(i + 1);
     let partials = permutations(before + after);
     for(let j = 0; j < partials.length; j++) {
       perms.push(str[i] + partials[j]);
@@ -162,22 +162,22 @@ function permutations(str) {
 
 //8.9
 function allValidParens(n) {
-  let str = new Array(2*n);
+  let parenStr = new Array(2*n);
   let parens = [];
   addParens(parens, n, n, str, 0);
   return parens;
 }
 
-function addParens(parens, leftRem, rightRem, str, idx) {
+function addParens(parens, leftRem, rightRem, parenStr, idx) {
   if(leftRem < 0 || rightRem < leftRem) return;
   if(leftRem === 0 && rightRem === 0) {
-    parens.push(str.join(""));
+    parens.push(parenStr.join(""));
   }
   else {
-    str[idx] = '(';
-    addParens(parens, leftRem - 1, rightRem, str, idx + 1);
-    str[idx] = ')';
-    addParens(parens, leftRem, rightRem - 1, str, idx + 1)
+    parenStr[idx] = '(';
+    addParens(parens, leftRem - 1, rightRem, parenStr, idx + 1);
+    parenStr[idx] = ')';
+    addParens(parens, leftRem, rightRem - 1, parenStr, idx + 1)
   }
 }
 

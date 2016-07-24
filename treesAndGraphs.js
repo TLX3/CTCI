@@ -326,7 +326,7 @@ function addToLists(list, node, depth) {
 
 /**
 4.4
-O(N) time O(N) space
+O(N) time O(H) space
 */
 function checkBalanced(binaryTree) {
   let pathsToLeaf = {min: Number.MAX_SAFE_INTEGER, max: 0};
@@ -351,7 +351,7 @@ function findDepth(cache, node, depth) {
 
 /**
 4.5
-O(N) time O(N) space
+O(N) time O(lgN) space
 */
 function validateBST(binaryTree) {
   return checkBST(tree.root, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
